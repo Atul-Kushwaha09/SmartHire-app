@@ -1,1 +1,1 @@
-# SmartScreener Backend App Package
+# SmartHire Backend App Package

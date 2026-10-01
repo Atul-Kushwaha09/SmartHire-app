@@ -10,7 +10,7 @@ from app.services.parser import ResumeParserService
 from app.services.extractor import LLMExtractionService
 from app.services.scorer import ScoringEngine
 
-app = FastAPI(title="SmartScreener Backend API", version="1.0.0")
+app = FastAPI(title="SmartHire Backend API", version="1.0.0")
 
 # CORS middleware configuration to allow communication from frontend
 app.add_middleware(
@@ -28,7 +28,7 @@ def on_startup():
 @app.get("/")
 def root():
     return {
-        "name": "SmartScreener Backend API",
+        "name": "SmartHire Backend API",
         "status": "online",
         "docs": "/docs",
         "frontend": "http://localhost:3000"
@@ -40,7 +40,7 @@ def health_check():
     return {
         "status": "healthy",
         "ollama_status": "connected" if ollama_ok else "fallback_mode",
-        "message": "SmartScreener API is active." if ollama_ok else "SmartScreener API active in Local NLP Fallback Mode."
+        "message": "SmartHire API is active." if ollama_ok else "SmartHire API active in Local NLP Fallback Mode."
     }
 
 @app.post("/api/jobs", response_model=JobDescriptionResponse)

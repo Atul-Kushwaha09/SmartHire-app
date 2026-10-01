@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# SmartScreener Concurrent Dev Server Startup Script
+# SmartHire Concurrent Dev Server Startup Script
 
 # Color codes
 GREEN='\033[0;32m'
@@ -10,7 +10,7 @@ AMBER='\033[0;33m'
 NC='\033[0m' # No Color
 
 echo -e "${PURPLE}====================================================${NC}"
-echo -e "${PURPLE}          SMARTSCREENER STARTUP LAUNCHER            ${NC}"
+echo -e "${PURPLE}             SMARTHIRE STARTUP LAUNCHER             ${NC}"
 echo -e "${PURPLE}====================================================${NC}"
 
 # Check if Ollama is running
@@ -50,7 +50,7 @@ npm run dev &
 FRONTEND_PID=$!
 
 echo -e "${GREEN}====================================================${NC}"
-echo -e "${GREEN}  SmartScreener is running!                         ${NC}"
+echo -e "${GREEN}  SmartHire is running!                             ${NC}"
 echo -e "${GREEN}  - Web Interface:  http://localhost:3000            ${NC}"
 echo -e "${GREEN}  - API Swagger:    http://localhost:8000/docs        ${NC}"
 echo -e "${GREEN}  Press [Ctrl+C] to stop all servers.               ${NC}"
@@ -58,3 +58,4 @@ echo -e "${GREEN}====================================================${NC}"
 
 # Keep script running to forward logs or wait for exit
 wait
+

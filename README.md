@@ -1,4 +1,4 @@
-# 🚀 SmartScreener
+# 🚀 SmartHire
 
 An intelligent AI-powered resume screening and candidate ranking platform that matches candidates with job descriptions through multi-dimensional scoring and deep profile analysis.
 
@@ -72,7 +72,7 @@ Open your browser at: [http://localhost:3000](http://localhost:3000)
 ## 📂 Project Structure
 
 ```
-smartscreener/
+smarthire/
 ├── backend/
 │   ├── app/
 │   │   ├── main.py

@@ -1,7 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { X, Award, Briefcase, GraduationCap, Mail, Phone, Scale, Sparkles, Crown, Trophy, TrendingUp } from "lucide-react";
+import {
+  X, Award, Briefcase, GraduationCap, Mail, Phone,
+  Scale, Sparkles, Crown, Trophy, TrendingUp, CheckCircle2
+} from "lucide-react";
 import { API_BASE } from "../config";
 
 interface Candidate {
@@ -32,23 +35,24 @@ interface ComparisonMatrixProps {
   onClose: () => void;
 }
 
-// Visual bar component for inline comparison
 function CompareBar({ value, max, color }: { value: number; max: number; color: string }) {
   const isWinner = value === max && max > 0;
   return (
     <div className="flex items-center gap-2">
-      <div className="flex-1 h-2 rounded-full bg-white/[0.06] overflow-hidden">
+      <div className="flex-1 h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
         <div
           className={`h-full rounded-full transition-all duration-700 ${color}`}
           style={{ width: `${value}%` }}
         />
       </div>
-      <span className={`text-xs font-black tabular-nums ${isWinner ? "text-white" : "text-slate-400"}`}>
+      <span
+        className={`text-xs font-black tabular-nums ${
+          isWinner ? "text-indigo-600 dark:text-indigo-400 font-extrabold" : "text-slate-600 dark:text-slate-400"
+        }`}
+      >
         {value}%
       </span>
-      {isWinner && (
-        <span className="text-[9px] text-amber-400 font-black">★</span>
-      )}
+      {isWinner && <span className="text-[10px] text-amber-500 font-black">★</span>}
     </div>
   );
 }
@@ -80,156 +84,179 @@ export default function ComparisonMatrix({ jobId, candidateIds, onClose }: Compa
     }
   }, [jobId, candidateIds]);
 
-  const maxScore = candidates.length > 0 ? Math.max(...candidates.map(c => c.score)) : 0;
-  const maxExp = candidates.length > 0 ? Math.max(...candidates.map(c => c.experience.years)) : 0;
-  const maxTech = candidates.length > 0 ? Math.max(...candidates.map(c => c.technical_score)) : 0;
-  const maxEdu = candidates.length > 0 ? Math.max(...candidates.map(c => c.education_score)) : 0;
+  const maxScore = candidates.length > 0 ? Math.max(...candidates.map((c) => c.score)) : 0;
+  const maxExp = candidates.length > 0 ? Math.max(...candidates.map((c) => c.experience.years)) : 0;
+  const maxTech = candidates.length > 0 ? Math.max(...candidates.map((c) => c.technical_score)) : 0;
+  const maxEdu = candidates.length > 0 ? Math.max(...candidates.map((c) => c.education_score)) : 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4 sm:p-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 sm:p-6">
       <div className="absolute inset-0" onClick={onClose} />
 
       {/* Modal */}
-      <div className="relative flex flex-col w-full max-w-5xl h-full max-h-[88vh] rounded-3xl border border-white/[0.06] bg-[#0a0f1a] text-slate-100 shadow-2xl overflow-hidden animate-scale-in">
-
+      <div className="relative flex flex-col w-full max-w-5xl h-full max-h-[88vh] rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-2xl overflow-hidden animate-scale-in dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-white/[0.06] p-6 shrink-0 bg-white/[0.01]">
+        <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50/70 p-5 shrink-0 dark:border-slate-800 dark:bg-slate-900/80">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/20">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/50">
               <Scale className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="text-[15px] font-black text-white">
-                Comparison Matrix
+              <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">
+                Multi-Candidate Comparison Matrix
               </h2>
-              <p className="text-[11px] text-slate-500">
-                Side-by-side benchmark across all scoring dimensions
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                Side-by-side dimensional benchmarking across {candidates.length} candidates
               </p>
             </div>
           </div>
+
           <button
             onClick={onClose}
-            className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-2 text-slate-400 transition hover:bg-white/[0.08] hover:text-white"
+            className="rounded-lg border border-slate-200 bg-white p-1.5 text-slate-500 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
 
-        {/* Body */}
-        {loading ? (
-          <div className="flex-1 flex flex-col items-center justify-center p-12">
-            <div className="h-10 w-10 animate-spin rounded-full border-[3px] border-indigo-500 border-t-transparent" />
-            <p className="mt-4 text-xs font-semibold text-slate-500">Benchmarking candidates...</p>
-          </div>
-        ) : (
-          <div className="flex-1 overflow-auto p-6">
-            {/* Card-style comparison (responsive) */}
-            <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${candidates.length}, minmax(260px, 1fr))` }}>
-              {candidates.map((cand) => {
-                const isOverallWinner = cand.score === maxScore && candidates.length > 1;
+        {/* Content Table / Columns */}
+        <div className="flex-1 overflow-auto p-5">
+          {loading ? (
+            <div className="flex h-64 flex-col items-center justify-center gap-3 text-slate-500">
+              <div className="h-6 w-6 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent" />
+              <span className="text-xs font-medium">Computing comparative metrics...</span>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {candidates.map((c) => {
+                const isOverallWinner = c.score === maxScore && maxScore > 0;
 
                 return (
                   <div
-                    key={cand.id}
-                    className={`rounded-2xl border p-5 space-y-5 transition-all ${
+                    key={c.id}
+                    className={`rounded-xl border p-4 transition-all flex flex-col justify-between ${
                       isOverallWinner
-                        ? "border-amber-500/30 bg-amber-500/[0.04] shadow-lg shadow-amber-500/5"
-                        : "border-white/[0.06] bg-white/[0.02]"
+                        ? "border-indigo-300 bg-indigo-50/20 shadow-sm dark:border-indigo-500/50 dark:bg-indigo-950/20"
+                        : "border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/60"
                     }`}
                   >
-                    {/* Profile Header */}
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-cyan-500 p-[2px]">
-                        <div className="flex h-full w-full items-center justify-center rounded-[10px] bg-[#0a0f1a] text-xs font-black text-white">
-                          {cand.name.split(" ").map(n => n[0]).slice(0, 2).join("").toUpperCase()}
+                    <div>
+                      {/* Top Header Card */}
+                      <div className="flex items-start justify-between gap-2 mb-3">
+                        <div>
+                          <div className="flex items-center gap-1.5">
+                            <h3 className="font-bold text-slate-900 dark:text-white text-sm">
+                              {c.name}
+                            </h3>
+                            {isOverallWinner && (
+                              <span className="flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.2 text-[9px] font-bold text-amber-800 dark:bg-amber-950/60 dark:text-amber-300">
+                                <Crown className="h-3 w-3" /> Top Pick
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-[11px] text-slate-500 truncate">
+                            {c.email || c.phone || "No contact info"}
+                          </p>
                         </div>
-                      </div>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-bold text-sm text-white truncate">{cand.name}</span>
-                          {isOverallWinner && (
-                            <Crown className="h-4 w-4 text-amber-400 shrink-0" />
-                          )}
-                        </div>
-                        <span className="text-[10px] text-slate-500">#{cand.id}</span>
-                      </div>
-                    </div>
 
-                    {/* Overall Score */}
-                    <div className="text-center rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 block mb-1">Overall Fit</span>
-                      <span className={`text-3xl font-black tabular-nums ${
-                        cand.score >= 80 ? "text-emerald-400" : cand.score >= 50 ? "text-amber-400" : "text-rose-400"
-                      }`}>
-                        {cand.score}%
-                      </span>
-                    </div>
-
-                    {/* Dimension Bars */}
-                    <div className="space-y-3">
-                      <div>
-                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Technical</span>
-                        <CompareBar value={cand.technical_score} max={maxTech} color="bg-indigo-500" />
-                      </div>
-                      <div>
-                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Experience</span>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="font-black text-cyan-400 text-sm tabular-nums">{cand.experience.years} Yrs</span>
-                          {cand.experience.years === maxExp && candidates.length > 1 && (
-                            <span className="text-[9px] text-amber-400 font-black">★ Most</span>
-                          )}
-                        </div>
-                        <CompareBar value={cand.experience_score} max={Math.max(...candidates.map(c => c.experience_score))} color="bg-cyan-500" />
-                      </div>
-                      <div>
-                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Education</span>
-                        <CompareBar value={cand.education_score} max={maxEdu} color="bg-emerald-500" />
-                        <p className="text-[10px] text-slate-500 mt-1 line-clamp-1">{cand.education || "Not specified"}</p>
-                      </div>
-                    </div>
-
-                    {/* AI Summary */}
-                    <div className="border-t border-white/[0.04] pt-4">
-                      <div className="flex items-center gap-1.5 mb-2">
-                        <Sparkles className="h-3 w-3 text-indigo-400" />
-                        <span className="text-[9px] font-black uppercase tracking-widest text-indigo-400">AI Summary</span>
-                      </div>
-                      <p className="text-[11px] leading-relaxed text-slate-400 line-clamp-4">
-                        {cand.summary || "No summary generated."}
-                      </p>
-                    </div>
-
-                    {/* Skills */}
-                    <div className="border-t border-white/[0.04] pt-4">
-                      <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 block mb-2">Skills</span>
-                      <div className="flex flex-wrap gap-1 max-h-20 overflow-y-auto">
-                        {cand.skills.map((s, idx) => (
-                          <span key={idx} className="rounded-md bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">
-                            {s}
+                        <div className="flex flex-col items-end">
+                          <span className="text-lg font-black tabular-nums text-indigo-600 dark:text-indigo-400">
+                            {c.score}%
                           </span>
-                        ))}
+                          <span className="text-[9px] uppercase font-bold text-slate-400">
+                            Score
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Dimension Comparison Bars */}
+                      <div className="space-y-2.5 rounded-lg border border-slate-100 bg-slate-50/60 p-3 text-xs dark:border-slate-800 dark:bg-slate-800/40 mb-3">
+                        <div>
+                          <div className="flex justify-between text-[11px] mb-1">
+                            <span className="font-semibold text-slate-600 dark:text-slate-400">
+                              Technical Fit
+                            </span>
+                          </div>
+                          <CompareBar
+                            value={c.technical_score}
+                            max={maxTech}
+                            color="bg-indigo-600 dark:bg-indigo-500"
+                          />
+                        </div>
+
+                        <div>
+                          <div className="flex justify-between text-[11px] mb-1">
+                            <span className="font-semibold text-slate-600 dark:text-slate-400">
+                              Experience Match
+                            </span>
+                          </div>
+                          <CompareBar
+                            value={c.experience_score}
+                            max={maxExp}
+                            color="bg-blue-600 dark:bg-blue-500"
+                          />
+                        </div>
+
+                        <div>
+                          <div className="flex justify-between text-[11px] mb-1">
+                            <span className="font-semibold text-slate-600 dark:text-slate-400">
+                              Education
+                            </span>
+                          </div>
+                          <CompareBar
+                            value={c.education_score}
+                            max={maxEdu}
+                            color="bg-emerald-600 dark:bg-emerald-500"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Key Profile Stats */}
+                      <div className="space-y-2 text-xs">
+                        <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                          <span className="text-slate-500">Experience Years</span>
+                          <span className="font-bold text-slate-900 dark:text-white">
+                            {c.experience.years} Yrs
+                          </span>
+                        </div>
+                        <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                          <span className="text-slate-500">Education</span>
+                          <span className="font-semibold text-slate-900 dark:text-white truncate max-w-[160px]">
+                            {c.education || "None listed"}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Skills */}
+                      <div className="mt-3">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">
+                          Top Match Skills ({c.skills.length})
+                        </span>
+                        <div className="flex flex-wrap gap-1">
+                          {c.skills.slice(0, 6).map((skill, idx) => (
+                            <span
+                              key={idx}
+                              className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     </div>
 
-                    {/* Contact */}
-                    <div className="border-t border-white/[0.04] pt-3 space-y-1 text-[11px] text-slate-500">
-                      {cand.email && (
-                        <div className="flex items-center gap-1.5">
-                          <Mail className="h-3 w-3 text-indigo-400/50" /> {cand.email}
-                        </div>
-                      )}
-                      {cand.phone && (
-                        <div className="flex items-center gap-1.5">
-                          <Phone className="h-3 w-3 text-indigo-400/50" /> {cand.phone}
-                        </div>
-                      )}
-                    </div>
+                    {/* Summary Quote */}
+                    {c.summary && (
+                      <div className="mt-3 rounded-lg bg-slate-50 p-2.5 text-[11px] leading-relaxed text-slate-600 dark:bg-slate-800/50 dark:text-slate-300">
+                        <p className="line-clamp-2 italic">"{c.summary}"</p>
+                      </div>
+                    )}
                   </div>
                 );
               })}
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

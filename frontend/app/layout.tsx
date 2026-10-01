@@ -15,10 +15,11 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SmartScreener — AI-Powered Resume Screening & Candidate Ranking",
+  title: "SmartHire — AI-Powered Resume Screening & Candidate Ranking",
   description:
-    "An intelligent SaaS platform that uses AI semantic analysis to screen, score, rank and compare job applicants against role specifications — instantly.",
+    "SmartHire is an intelligent recruitment SaaS platform using AI semantic analysis to screen, score, rank, and compare job applicants against role specifications instantly.",
   keywords: [
+    "SmartHire",
     "AI resume screening",
     "candidate ranking",
     "recruitment automation",

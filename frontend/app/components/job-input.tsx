@@ -1,7 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { Briefcase, Sparkles, FileText, CheckCircle2, ChevronRight, Code2, BrainCircuit, Rocket, Compass, Target, ArrowRight } from "lucide-react";
+import {
+  Briefcase, Sparkles, FileText, CheckCircle2,
+  Code2, BrainCircuit, Rocket, Compass, Target, ArrowRight,
+  ChevronDown, ChevronUp
+} from "lucide-react";
 import { API_BASE } from "../config";
 
 interface JobInputProps {
@@ -10,7 +14,7 @@ interface JobInputProps {
 }
 
 const CATEGORIES = [
-  { id: "all", label: "All Presets" },
+  { id: "all", label: "All Roles" },
   { id: "engineering", label: "Engineering" },
   { id: "ai", label: "AI & Data" },
   { id: "product", label: "Product & Lead" },
@@ -53,6 +57,7 @@ export default function JobInput({ onJobCreated, activeJob }: JobInputProps) {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [showPresets, setShowPresets] = useState(false);
 
   const filteredTemplates = selectedCategory === "all"
     ? TEMPLATES
@@ -96,77 +101,95 @@ export default function JobInput({ onJobCreated, activeJob }: JobInputProps) {
   };
 
   return (
-    <div className="glass-panel relative overflow-hidden rounded-2xl p-6 transition-all duration-300">
-      {/* Decorative glow */}
-      <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-gradient-to-br from-indigo-500/12 via-purple-500/8 to-transparent blur-3xl" />
-
+    <div className="glass-panel relative rounded-2xl p-5 transition-all duration-300">
       {/* Header */}
-      <div className="mb-5 flex items-center gap-3 relative z-10">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/20">
-          <Target className="h-5 w-5" />
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/50 shadow-xs">
+            <Target className="h-4.5 w-4.5" />
+          </div>
+          <div>
+            <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">
+              Target Role Specification
+            </h2>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">
+              Define qualification benchmarks & requirements
+            </p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-[15px] font-black tracking-tight text-slate-900 dark:text-white">
-            Job Specification
-          </h2>
-          <p className="text-[11px] text-slate-500">
-            Define the screening criteria & required competencies
-          </p>
-        </div>
+
+        {/* Compact Preset Toggle */}
+        <button
+          type="button"
+          onClick={() => setShowPresets(!showPresets)}
+          className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-semibold text-slate-600 transition-all hover:bg-slate-100 hover:text-indigo-600 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300 dark:hover:bg-slate-800"
+        >
+          <Sparkles className="h-3 w-3 text-indigo-500" />
+          <span>Presets</span>
+          {showPresets ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+        </button>
       </div>
 
-      {/* Category Tabs */}
-      <div className="mb-3 flex items-center gap-1 overflow-x-auto pb-1 text-[11px]">
-        {CATEGORIES.map((cat) => (
-          <button
-            key={cat.id}
-            type="button"
-            onClick={() => setSelectedCategory(cat.id)}
-            className={`rounded-lg px-2.5 py-1.5 font-semibold transition-all ${
-              selectedCategory === cat.id
-                ? "bg-indigo-500 text-white shadow-sm shadow-indigo-500/25"
-                : "text-slate-500 hover:text-slate-300 hover:bg-white/[0.04]"
-            }`}
-          >
-            {cat.label}
-          </button>
-        ))}
-      </div>
+      {/* Collapsible Presets Section */}
+      {showPresets && (
+        <div className="mb-4 rounded-xl border border-slate-200/90 bg-slate-50/70 p-3 dark:border-slate-800/80 dark:bg-slate-900/40 animate-fade-up">
+          {/* Category Tabs */}
+          <div className="mb-2.5 flex items-center gap-1 overflow-x-auto pb-1 text-[10px]">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`rounded-md px-2 py-1 font-semibold transition-all ${
+                  selectedCategory === cat.id
+                    ? "bg-indigo-600 text-white shadow-xs"
+                    : "text-slate-600 hover:bg-slate-200/60 dark:text-slate-400 dark:hover:bg-slate-800"
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
 
-      {/* Preset Cards */}
-      <div className="mb-5 grid grid-cols-1 gap-2 sm:grid-cols-2">
-        {filteredTemplates.map((tmpl, idx) => {
-          const Icon = tmpl.icon;
-          return (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => applyTemplate(tmpl)}
-              className="group flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] p-3 text-left transition-all hover:border-indigo-500/30 hover:bg-indigo-500/[0.04] hover:shadow-lg hover:shadow-indigo-500/5"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-400 transition group-hover:bg-indigo-500/20">
-                  <Icon className="h-4 w-4" />
-                </div>
-                <div className="min-w-0">
-                  <div className="truncate text-xs font-bold text-slate-200 group-hover:text-indigo-400 transition-colors">
-                    {tmpl.title}
+          {/* Preset Cards Grid */}
+          <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
+            {filteredTemplates.map((tmpl, idx) => {
+              const Icon = tmpl.icon;
+              return (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => {
+                    applyTemplate(tmpl);
+                    setShowPresets(false);
+                  }}
+                  className="group flex items-center justify-between rounded-lg border border-slate-200/80 bg-white p-2 text-left transition-all hover:border-indigo-400 hover:bg-indigo-50/40 dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-indigo-500 dark:hover:bg-indigo-950/20"
+                >
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
+                      <Icon className="h-3 w-3" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="truncate text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+                        {tmpl.title}
+                      </div>
+                      <div className="text-[9px] text-slate-400">{tmpl.badge}</div>
+                    </div>
                   </div>
-                  <div className="text-[10px] text-slate-500">{tmpl.badge}</div>
-                </div>
-              </div>
-              <Sparkles className="h-3.5 w-3.5 shrink-0 text-slate-600 transition group-hover:text-indigo-400 group-hover:scale-110" />
-            </button>
-          );
-        })}
-      </div>
+                  <Sparkles className="h-3 w-3 shrink-0 text-slate-400 group-hover:text-indigo-500" />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Input Form */}
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-3">
         <div>
-          <label htmlFor="job-title" className="mb-1.5 flex items-center justify-between text-[11px] font-semibold text-slate-400">
-            <span>Role / Position Title</span>
-            <span className="text-[10px] font-normal text-slate-600">e.g. Senior Backend Engineer</span>
+          <label htmlFor="job-title" className="mb-1 flex items-center justify-between text-[11px] font-semibold text-slate-700 dark:text-slate-300">
+            <span>Role / Title</span>
+            <span className="text-[10px] font-normal text-slate-400">e.g. Senior Backend Engineer</span>
           </label>
           <input
             id="job-title"
@@ -175,81 +198,81 @@ export default function JobInput({ onJobCreated, activeJob }: JobInputProps) {
             placeholder="e.g. Lead Cloud Architect"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-2.5 text-xs text-slate-100 outline-none transition-all placeholder:text-slate-600 focus:border-indigo-500/50 focus:bg-white/[0.05] focus:ring-1 focus:ring-indigo-500/20"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2 text-xs text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-indigo-400 dark:focus:bg-slate-900"
           />
         </div>
 
         <div>
-          <label htmlFor="job-desc" className="mb-1.5 flex items-center justify-between text-[11px] font-semibold text-slate-400">
-            <span>Requirements & Description</span>
-            <span className="text-[10px] font-normal text-slate-600">Skills, responsibilities, tools</span>
+          <label htmlFor="job-desc" className="mb-1 flex items-center justify-between text-[11px] font-semibold text-slate-700 dark:text-slate-300">
+            <span>Requirements & Criteria</span>
+            <span className="text-[10px] font-normal text-slate-400">Skills, responsibilities, tools</span>
           </label>
           <textarea
             id="job-desc"
             required
-            rows={4}
-            placeholder="Outline required programming languages, frameworks, target years of experience, and role expectations..."
+            rows={3}
+            placeholder="Specify required skills, frameworks, years of experience, and role responsibilities..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full resize-none rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-2.5 text-xs leading-relaxed text-slate-100 outline-none transition-all placeholder:text-slate-600 focus:border-indigo-500/50 focus:bg-white/[0.05] focus:ring-1 focus:ring-indigo-500/20"
+            className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2 text-xs leading-relaxed text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-indigo-400 dark:focus:bg-slate-900"
           />
         </div>
 
         <button
           type="submit"
           disabled={loading || !title.trim() || !description.trim()}
-          className="relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 py-3 text-xs font-black text-white shadow-lg shadow-indigo-500/20 transition-all hover:shadow-indigo-500/35 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40"
+          className="relative flex w-full items-center justify-center gap-1.5 rounded-xl bg-indigo-600 py-2.5 text-xs font-bold text-white shadow-sm shadow-indigo-600/20 transition-all hover:bg-indigo-500 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-600 dark:hover:bg-indigo-500"
         >
           {loading ? (
             <div className="flex items-center gap-2">
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+              <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" />
               <span>Analyzing & Creating Pipeline...</span>
             </div>
           ) : (
             <>
-              <FileText className="h-4 w-4" />
-              <span>Launch Screening Pipeline</span>
-              <ArrowRight className="h-4 w-4 opacity-70" />
+              <FileText className="h-3.5 w-3.5" />
+              <span>Establish Screening Pipeline</span>
+              <ArrowRight className="h-3.5 w-3.5 opacity-80" />
             </>
           )}
         </button>
       </form>
 
-      {/* Success Toast */}
+      {/* Success Notification Feedback */}
       {message && (
-        <div className="mt-4 flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/8 px-3.5 py-2.5 text-xs font-medium text-emerald-400 animate-fade-up">
-          <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
+        <div className="mt-3 flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-[11px] font-medium text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-300 animate-fade-up">
+          <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
           <span>{message}</span>
         </div>
       )}
 
-      {/* Active Pipeline Profile */}
+      {/* Active Job Profile Display */}
       {activeJob && (
-        <div className="mt-5 rounded-xl border border-indigo-500/15 bg-indigo-500/[0.04] p-4">
+        <div className="mt-4 rounded-xl border border-indigo-100 bg-indigo-50/50 p-3.5 dark:border-indigo-900/40 dark:bg-indigo-950/20">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black uppercase tracking-widest text-indigo-400">
-              Active Pipeline
+            <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-400">
+              Active Target Role
             </span>
-            <span className="rounded-md bg-white/[0.06] px-1.5 py-0.5 text-[9px] font-bold text-slate-500">
+            <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[9px] font-bold text-indigo-700 dark:bg-indigo-900/60 dark:text-indigo-300">
               #{activeJob.id}
             </span>
           </div>
-          <h3 className="mt-1 text-sm font-bold text-white">
+          <h3 className="mt-1 text-xs font-bold text-slate-900 dark:text-slate-100">
             {activeJob.title}
           </h3>
-          <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-slate-400">
+          <p className="mt-1 line-clamp-2 text-[11px] leading-relaxed text-slate-600 dark:text-slate-300">
             {activeJob.description}
           </p>
           {activeJob.requirements && activeJob.requirements.length > 0 && (
-            <div className="mt-3">
-              <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">
-                Match Criteria ({activeJob.requirements.length}):
+            <div className="mt-2.5">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                Key Criteria ({activeJob.requirements.length}):
               </span>
-              <div className="mt-1.5 flex flex-wrap gap-1.5">
+              <div className="mt-1 flex flex-wrap gap-1">
                 {activeJob.requirements.map((req: string, idx: number) => (
                   <span
                     key={idx}
-                    className="rounded-md border border-indigo-500/15 bg-indigo-500/8 px-2 py-0.5 text-[10px] font-semibold text-indigo-300"
+                    className="rounded-md border border-indigo-200/80 bg-white px-1.5 py-0.5 text-[10px] font-medium text-indigo-700 dark:border-indigo-800/60 dark:bg-slate-900 dark:text-indigo-300"
                   >
                     {req}
                   </span>

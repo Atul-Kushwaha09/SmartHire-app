@@ -1,7 +1,7 @@
-# SmartScreener Concurrent Dev Server Startup Script (Windows PowerShell)
+# SmartHire Concurrent Dev Server Startup Script (Windows PowerShell)
 
 Write-Host "====================================================" -ForegroundColor Magenta
-Write-Host "          SMARTSCREENER STARTUP LAUNCHER            " -ForegroundColor Magenta
+Write-Host "             SMARTHIRE STARTUP LAUNCHER             " -ForegroundColor Magenta
 Write-Host "====================================================" -ForegroundColor Magenta
 
 # Check local Ollama status
@@ -28,7 +28,8 @@ $frontendDir = Join-Path $projectRoot "frontend"
 Start-Process -FilePath "powershell.exe" -ArgumentList "-NoExit", "-Command", "cd '$frontendDir'; npm run dev"
 
 Write-Host "====================================================" -ForegroundColor Green
-Write-Host "  SmartScreener is launching!" -ForegroundColor Green
+Write-Host "  SmartHire is launching!" -ForegroundColor Green
 Write-Host "  - Web Interface:  http://localhost:3000" -ForegroundColor Green
 Write-Host "  - API Swagger:    http://localhost:8000/docs" -ForegroundColor Green
 Write-Host "====================================================" -ForegroundColor Green
+
