@@ -36,7 +36,7 @@ An intelligent AI-powered resume screening and candidate ranking platform that m
 
 This project aims to solve the problem of manual, slow, and inconsistent first-pass resume screening by providing a lightweight, locally hosted tool that ranks candidates against a job description.
 
-For the complete business context, timeline, and risk analysis, please read the full **[Business Requirements Document (BRD)](../BRD.md)**.
+For the complete business context, timeline, and risk analysis, please read the full **[Business Requirements Document (BRD)](BRD.md)**.
 
 ### Business Objectives
 - **Reduce Recruiter Time**: Achieve at least a 50% reduction in time-to-shortlist for first-pass screening.
