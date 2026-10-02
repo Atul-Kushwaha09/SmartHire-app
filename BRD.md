@@ -3,7 +3,7 @@
 | | |
 | --- | --- |
 | **Product / Project** | SmartHire |
-| **Repository** | github.com/thevyanzu-ship-it/SmartHire-app |
+| **Repository** | github.com/Atul-Kushwaha09/SmartHire-app |
 | **Version** | 1.0 (draft) |
 | **Date** | 1 October 2026 |
 | **Status** | Draft for stakeholder review |
