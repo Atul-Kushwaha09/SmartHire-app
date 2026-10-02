@@ -20,7 +20,7 @@ $projectRoot = $PSScriptRoot
 # Start FastAPI Backend
 Write-Host "[2/3] Starting FastAPI Backend on port 8000..." -ForegroundColor Cyan
 $backendDir = Join-Path $projectRoot "backend"
-Start-Process -FilePath "powershell.exe" -ArgumentList "-NoExit", "-Command", "cd '$backendDir'; .\venv\Scripts\Activate.ps1; python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+Start-Process -FilePath "powershell.exe" -ArgumentList "-NoExit", "-Command", "cd '$backendDir'; .\venv\Scripts\python.exe -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
 
 # Start Next.js Frontend
 Write-Host "[3/3] Starting Next.js Dev Server on port 3000..." -ForegroundColor Cyan
